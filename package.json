@@ -1,0 +1,44 @@
+{
+  "name": "sskill",
+  "version": "0.1.0",
+  "description": "Simple Skill CLI — Install AI agent skills directly from any source, zero dependencies",
+  "type": "module",
+  "bin": {
+    "sskill": "bin/sskill.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "preferGlobal": true,
+  "keywords": [
+    "skill",
+    "skills",
+    "cli",
+    "agent",
+    "ai",
+    "sskill",
+    "opencode",
+    "claude-code",
+    "cursor",
+    "agentskill",
+    "zero-dependency"
+  ],
+  "author": "Samet ÇELİKBIÇAK",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sametcelikbicak/simple-skill-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sametcelikbicak/simple-skill-cli/issues"
+  },
+  "homepage": "https://github.com/sametcelikbicak/simple-skill-cli#readme",
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --experimental-test-coverage --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
