@@ -30,7 +30,7 @@ async function askScope() {
 
 export async function installCommand(source, options) {
   const hasScopeFlags = options.global || options.project || options.claude
-  const scope = hasScopeFlags ? options : await askScope()
+  const scope = hasScopeFlags ? options : { global: true, project: false, claude: false }
 
   console.log(`\n🔍 Resolving skill from: ${source}`)
   const resolved = await resolveSource(source)

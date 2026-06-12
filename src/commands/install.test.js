@@ -65,6 +65,15 @@ describe('install command', () => {
     restore()
   })
 
+  it('installs with default scope (global) when no flags given', async () => {
+    const { logs, restore } = capture('log')
+
+    await installModule.installCommand(join(tempDir, 'test-skill'), {})
+
+    assert.ok(logs.some(l => l.includes('Installed')))
+    restore()
+  })
+
   it('installs with --all scope', async () => {
     const origCwd = process.cwd
     process.cwd = () => tempDir
