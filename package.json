@@ -1,12 +1,15 @@
 {
   "name": "sskill",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simple Skill CLI — Install AI agent skills directly from any source, zero dependencies",
   "type": "module",
   "bin": {
     "sskill": "./bin/sskill.js"
   },
-  "files": ["bin", "src"],
+  "files": [
+    "bin",
+    "src"
+  ],
   "preferGlobal": true,
   "keywords": [
     "skill",
@@ -31,7 +34,6 @@
     "url": "https://github.com/sametcelikbicak/simple-skill-cli/issues"
   },
   "homepage": "https://github.com/sametcelikbicak/simple-skill-cli#readme",
-  "dependencies": {},
   "engines": {
     "node": ">=18"
   }

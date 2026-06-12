@@ -3,7 +3,7 @@ import { join, dirname, basename } from 'node:path'
 import { tmpdir, homedir } from 'node:os'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 
 function isGitHubRef(source) {
   return /^[\w.-]+\/[\w.-]+$/.test(source) && !source.startsWith('/') && !source.startsWith('.')
@@ -25,6 +25,38 @@ function parseMetadata(content) {
   return { name, slug, owner }
 }
 
+function scanForSkill(dir, maxDepth = 3) {
+  const results = []
+
+  function scan(currentDir, depth = 0) {
+    if (depth > maxDepth) return
+    let entries
+    try {
+      entries = readdirSync(currentDir, { withFileTypes: true })
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      if (entry.name === '.git') continue
+      const fullPath = join(currentDir, entry.name)
+      if (entry.isDirectory()) {
+        scan(fullPath, depth + 1)
+      } else if (entry.name === 'SKILL.md') {
+        try {
+          const c = readFileSync(fullPath, 'utf-8')
+          const meta = parseMetadata(c)
+          results.push({ dir: dirname(fullPath), ...meta, content: c })
+        } catch {
+          // skip unreadable files
+        }
+      }
+    }
+  }
+
+  scan(dir)
+  return results
+}
+
 async function resolveLocal(source) {
   const expanded = source.replace(/^~/, homedir())
   const st = await stat(expanded)
@@ -38,52 +70,49 @@ async function resolveLocal(source) {
     throw new Error(`Source must be a SKILL.md file or a directory containing one`)
   }
 
-  const skillPath = join(skillDir, 'SKILL.md')
+  const directPath = join(skillDir, 'SKILL.md')
   try {
-    await stat(skillPath)
+    await stat(directPath)
+    const content = await readFile(directPath, 'utf-8')
+    const meta = parseMetadata(content)
+    const dirEntries = await readdir(skillDir, { withFileTypes: true })
+    const files = dirEntries.filter(e => e.name !== '.git').map(e => e.name)
+    return { ...meta, content, files, skillDir, sourcePath: source, sourceType: 'local' }
   } catch {
+    // direct SKILL.md not found, scan recursively
+  }
+
+  const found = scanForSkill(skillDir)
+  if (found.length === 0) {
     throw new Error(`No SKILL.md found in ${skillDir}`)
   }
 
-  const content = await readFile(skillPath, 'utf-8')
-  const meta = parseMetadata(content)
+  const skill = found[0]
+  const files = readdirSync(skill.dir, { withFileTypes: true })
+    .filter(e => e.name !== '.git')
+    .map(e => e.name)
 
-  const dirEntries = await readdir(skillDir, { withFileTypes: true })
-  const files = dirEntries.filter(e => e.name !== '.git').map(e => e.name)
-
-  return { ...meta, content, files, skillDir, sourcePath: source, sourceType: 'local' }
+  return { ...skill, files, skillDir: skill.dir, sourcePath: source, sourceType: 'local' }
 }
 
 async function resolveGitHub(source) {
   const tmpDir = join(tmpdir(), `sskill-${randomUUID().slice(0, 8)}`)
   const url = `https://github.com/${source}.git`
 
-  execSync(`git clone --depth 1 "${url}" "${tmpDir}"`, { stdio: 'pipe', timeout: 30000 })
-
-  const skillDirs = []
-
-  function scan(dir, depth = 0) {
-    if (depth > 3) return
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      const full = join(dir, entry.name)
-      if (entry.isDirectory() && !entry.name.startsWith('.')) {
-        scan(full, depth + 1)
-      } else if (entry.name === 'SKILL.md') {
-        const c = readFileSync(full, 'utf-8')
-        const meta = parseMetadata(c)
-        skillDirs.push({ dir: dirname(full), ...meta, content: c })
-      }
-    }
+  try {
+    execSync(`git clone --depth 1 "${url}" "${tmpDir}"`, { stdio: 'pipe', timeout: 30000 })
+  } catch {
+    throw new Error(`Failed to clone GitHub repo ${source}`)
   }
 
-  scan(tmpDir)
+  const found = scanForSkill(tmpDir)
 
-  if (skillDirs.length === 0) {
+  if (found.length === 0) {
     execSync(`rm -rf "${tmpDir}"`)
     throw new Error(`No SKILL.md found in GitHub repo ${source}`)
   }
 
-  const skill = skillDirs[0]
+  const skill = found[0]
   const files = readdirSync(skill.dir, { withFileTypes: true })
     .filter(e => e.name !== '.git')
     .map(e => e.name)
