@@ -4,8 +4,6 @@ import { installCommand } from '../src/commands/install.js'
 import { listCommand } from '../src/commands/list.js'
 import { removeCommand } from '../src/commands/remove.js'
 
-const [,, cmd, ...args] = process.argv
-
 function usage() {
   console.log(`
 sskill — Simple Skill CLI
@@ -34,7 +32,8 @@ Examples:
 `)
 }
 
-async function main() {
+export async function main() {
+  const [,, cmd, ...args] = process.argv
   switch (cmd) {
     case 'install': {
       const source = args[0]
@@ -79,7 +78,17 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(`Error: ${err.message}`)
-  process.exit(1)
-})
+import { fileURLToPath } from 'node:url'
+
+export async function run() {
+  try {
+    await main()
+  } catch (err) {
+    console.error(`Error: ${err.message}`)
+    process.exit(1)
+  }
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  run()
+}
