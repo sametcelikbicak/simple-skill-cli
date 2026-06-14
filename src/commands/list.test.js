@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os'
 let tempDir, listModule
 
 before(async () => {
-  tempDir = mkdtempSync(join(tmpdir(), 'sskill-list-test-'))
+  tempDir = mkdtempSync(join(tmpdir(), 'sscli-list-test-'))
   process.env.HOME = tempDir
   await mkdir(join(tempDir, '.agents'), { recursive: true })
   listModule = await import('./list.js')

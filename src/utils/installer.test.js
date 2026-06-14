@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os'
 let tempDir, installerModule, resolvedSkill
 
 before(async () => {
-  tempDir = mkdtempSync(join(tmpdir(), 'sskill-install-test-'))
+  tempDir = mkdtempSync(join(tmpdir(), 'sscli-install-test-'))
   process.env.HOME = tempDir
 
   const sourceDir = join(tempDir, 'source-skill')

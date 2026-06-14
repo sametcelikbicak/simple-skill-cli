@@ -6,16 +6,16 @@ import { removeCommand } from '../src/commands/remove.js'
 
 function usage() {
   console.log(`
-sskill — Simple Skill CLI
+sscli — Simple Skill CLI
 
 Install AI agent skills directly from local paths or GitHub repos.
 Zero dependencies, no marketplace required.
 
 Usage:
-  sskill install <source>         Install a skill (local path or owner/repo)
-  sskill list                     List installed skills
-  sskill remove <slug>            Remove a skill
-  sskill help                     Show this help
+  sscli install <source>         Install a skill (local path or owner/repo)
+  sscli list                     List installed skills
+  sscli remove <slug>            Remove a skill
+  sscli help                     Show this help
 
 Options for install:
   --global     Install to ~/.agents/skills/ (default)
@@ -24,11 +24,11 @@ Options for install:
   --all        Install to all locations
 
 Examples:
-  sskill install ./my-skill
-  sskill install sametcelikbicak/task-decomposer
-  sskill install ./skills/my-skill --claude
-  sskill list
-  sskill remove task-decomposer
+  sscli install ./my-skill
+  sscli install sametcelikbicak/task-decomposer
+  sscli install ./skills/my-skill --claude
+  sscli list
+  sscli remove task-decomposer
 `)
 }
 
@@ -38,7 +38,7 @@ export async function main() {
     case 'install': {
       const source = args[0]
       if (!source) {
-        console.error('Usage: sskill install <source>')
+        console.error('Usage: sscli install <source>')
         console.error('Source can be a local path (./, /, ~) or a GitHub ref (owner/repo)')
         process.exit(1)
       }
@@ -62,7 +62,7 @@ export async function main() {
     case 'remove': {
       const slug = args[0]
       if (!slug) {
-        console.error('Usage: sskill remove <slug>')
+        console.error('Usage: sscli remove <slug>')
         process.exit(1)
       }
       await removeCommand(slug)

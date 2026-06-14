@@ -5,16 +5,16 @@ import { mkdir, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
-let tempDir, sskillModule, origArgv, origExit
+let tempDir, sscliModule, origArgv, origExit
 
 before(async () => {
-  tempDir = mkdtempSync(join(tmpdir(), 'sskill-cli-test-'))
+  tempDir = mkdtempSync(join(tmpdir(), 'sscli-cli-test-'))
   process.env.HOME = tempDir
   await mkdir(join(tempDir, '.agents'), { recursive: true })
 
   origArgv = process.argv
   origExit = process.exit
-  sskillModule = await import('./sskill.js')
+  sscliModule = await import('./sscli.js')
 })
 
 after(async () => {
@@ -38,49 +38,49 @@ function mockExit() {
   return () => { process.exit = orig }
 }
 
-describe('sskill CLI', () => {
+describe('sscli CLI', () => {
   it('shows usage for help command', async () => {
-    process.argv = ['node', 'sskill', 'help']
+    process.argv = ['node', 'sscli', 'help']
     const { logs, restore } = capture('log')
 
-    await sskillModule.main()
+    await sscliModule.main()
 
-    assert.ok(logs.some(l => l.includes('sskill')))
+    assert.ok(logs.some(l => l.includes('sscli')))
     restore()
   })
 
   it('shows usage for --help flag', async () => {
-    process.argv = ['node', 'sskill', '--help']
+    process.argv = ['node', 'sscli', '--help']
     const { logs, restore } = capture('log')
 
-    await sskillModule.main()
+    await sscliModule.main()
 
-    assert.ok(logs.some(l => l.includes('sskill')))
+    assert.ok(logs.some(l => l.includes('sscli')))
     restore()
   })
 
   it('shows usage for unknown command', async () => {
-    process.argv = ['node', 'sskill', 'unknown']
+    process.argv = ['node', 'sscli', 'unknown']
     const { logs, restore } = capture('log')
 
-    await sskillModule.main()
+    await sscliModule.main()
 
-    assert.ok(logs.some(l => l.includes('sskill')))
+    assert.ok(logs.some(l => l.includes('sscli')))
     restore()
   })
 
   it('errors when install has no source', async () => {
-    process.argv = ['node', 'sskill', 'install']
+    process.argv = ['node', 'sscli', 'install']
     const { logs: errors, restore: restoreErr } = capture('error')
     const restoreExit = mockExit()
 
     try {
-      await sskillModule.main()
+      await sscliModule.main()
     } catch (e) {
       assert.ok(e.message.includes('exit:1'))
     }
 
-    assert.ok(errors.some(e => e.includes('Usage: sskill install <source>')))
+    assert.ok(errors.some(e => e.includes('Usage: sscli install <source>')))
     restoreErr()
     restoreExit()
   })
@@ -90,35 +90,35 @@ describe('sskill CLI', () => {
     mkdirSync(skillDir, { recursive: true })
     writeFileSync(join(skillDir, 'SKILL.md'), '# slug: cli/cli-skill\nname: cli-skill\nContent')
 
-    process.argv = ['node', 'sskill', 'install', skillDir, '--global']
+    process.argv = ['node', 'sscli', 'install', skillDir, '--global']
     const { logs, restore } = capture('log')
 
-    await sskillModule.main()
+    await sscliModule.main()
 
     assert.ok(logs.some(l => l.includes('Installed')))
     restore()
   })
 
   it('errors when remove has no slug', async () => {
-    process.argv = ['node', 'sskill', 'remove']
+    process.argv = ['node', 'sscli', 'remove']
     const { logs: errors, restore: restoreErr } = capture('error')
     const restoreExit = mockExit()
 
     try {
-      await sskillModule.main()
+      await sscliModule.main()
     } catch (e) {
       assert.ok(e.message.includes('exit:1'))
     }
 
-    assert.ok(errors.some(e => e.includes('Usage: sskill remove <slug>')))
+    assert.ok(errors.some(e => e.includes('Usage: sscli remove <slug>')))
     restoreErr()
     restoreExit()
   })
 
   it('dispatches list command without errors', async () => {
-    process.argv = ['node', 'sskill', 'list']
+    process.argv = ['node', 'sscli', 'list']
 
-    await sskillModule.main()
+    await sscliModule.main()
 
     // If it reaches here without throwing, dispatch worked
     assert.ok(true)
@@ -129,25 +129,25 @@ describe('sskill CLI', () => {
     mkdirSync(skillDir, { recursive: true })
     writeFileSync(join(skillDir, 'SKILL.md'), '# slug: test/removable\nname: removable\nContent')
 
-    process.argv = ['node', 'sskill', 'install', skillDir, '--global']
-    await sskillModule.main()
+    process.argv = ['node', 'sscli', 'install', skillDir, '--global']
+    await sscliModule.main()
 
-    process.argv = ['node', 'sskill', 'remove', 'test/removable']
+    process.argv = ['node', 'sscli', 'remove', 'test/removable']
     const { logs, restore } = capture('log')
 
-    await sskillModule.main()
+    await sscliModule.main()
 
     assert.ok(logs.some(l => l.includes('Removed')))
     restore()
   })
 
   it('runs remove command with nonexistent skill', async () => {
-    process.argv = ['node', 'sskill', 'remove', 'nonexistent']
+    process.argv = ['node', 'sscli', 'remove', 'nonexistent']
     const { logs: errors, restore: restoreErr } = capture('error')
     const restoreExit = mockExit()
 
     try {
-      await sskillModule.main()
+      await sscliModule.main()
     } catch (e) {
       assert.ok(e.message.includes('exit:1'))
     }
@@ -158,17 +158,17 @@ describe('sskill CLI', () => {
   })
 
   it('run() catches errors', async () => {
-    process.argv = ['node', 'sskill', 'install']
+    process.argv = ['node', 'sscli', 'install']
     const { logs: errors, restore: restoreErr } = capture('error')
     const restoreExit = mockExit()
 
     try {
-      await sskillModule.run()
+      await sscliModule.run()
     } catch (e) {
       assert.ok(e.message.includes('exit:1'))
     }
 
-    assert.ok(errors.some(e => e.includes('Usage: sskill install <source>')))
+    assert.ok(errors.some(e => e.includes('Usage: sscli install <source>')))
     restoreErr()
     restoreExit()
   })

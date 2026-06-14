@@ -15,7 +15,7 @@ async function freshImport() {
 
 describe('resolver', () => {
   before(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'sskill-resolver-test-'))
+    tempDir = mkdtempSync(join(tmpdir(), 'sscli-resolver-test-'))
   })
 
   after(async () => {

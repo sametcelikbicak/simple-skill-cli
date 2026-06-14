@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os'
 let tempDir, removeModule
 
 before(async () => {
-  tempDir = mkdtempSync(join(tmpdir(), 'sskill-remove-test-'))
+  tempDir = mkdtempSync(join(tmpdir(), 'sscli-remove-test-'))
   process.env.HOME = tempDir
 
   await mkdir(join(tempDir, '.agents', 'skills', 'test-skill'), { recursive: true })

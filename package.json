@@ -1,10 +1,10 @@
 {
-  "name": "sskill",
+  "name": "sscli",
   "version": "0.1.0",
   "description": "Simple Skill CLI — Install AI agent skills directly from any source, zero dependencies",
   "type": "module",
   "bin": {
-    "sskill": "bin/sskill.js"
+    "sscli": "bin/sscli.js"
   },
   "files": [
     "bin",
@@ -17,7 +17,7 @@
     "cli",
     "agent",
     "ai",
-    "sskill",
+    "sscli",
     "opencode",
     "claude-code",
     "cursor",

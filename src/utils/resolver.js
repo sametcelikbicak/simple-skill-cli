@@ -96,7 +96,7 @@ async function resolveLocal(source) {
 }
 
 async function resolveGitHub(source) {
-  const tmpDir = join(tmpdir(), `sskill-${randomUUID().slice(0, 8)}`)
+  const tmpDir = join(tmpdir(), `sscli-${randomUUID().slice(0, 8)}`)
   const url = `https://github.com/${source}.git`
 
   try {

@@ -1,7 +1,7 @@
 <div align="center">
- <img src="assets/sskill_logo.png" alt="Logo" width="256" height="256">
+ <img src="assets/sscli_logo.png" alt="Logo" width="256" height="256">
 
-# sskill — Simple Skill CLI
+# sscli — Simple Skill CLI
 
  </div>
 
@@ -9,9 +9,9 @@
 
 Works with **opencode**, **claude-code**, **cursor**, and all spec-compliant agents.
 
-## Why sskill?
+## Why sscli?
 
-| Feature                           | sskill           | `npx add-skill` | `@agentskill.sh/cli` |
+| Feature                           | sscli           | `npx add-skill` | `@agentskill.sh/cli` |
 | --------------------------------- | ---------------- | --------------- | -------------------- |
 | Zero dependencies                 | ✅               | ✅              | ❌ (2)               |
 | Local path install                | ✅ **1st class** | ❌ GitHub only  | ❌ marketplace only  |
@@ -24,23 +24,23 @@ Works with **opencode**, **claude-code**, **cursor**, and all spec-compliant age
 ## Install
 
 ```bash
-npm install -g sskill
+npm install -g sscli
 # or
-npx sskill install <source>
+npx sscli install <source>
 ```
 
 ## Usage
 
 ```bash
-sskill install ./path/to/my-skill          # install from local folder
-sskill install sametcelikbicak/task-decomposer  # install from GitHub
-sskill list                                 # list installed skills
-sskill remove <slug>                        # remove a skill
+sscli install ./path/to/my-skill          # install from local folder
+sscli install sametcelikbicak/task-decomposer  # install from GitHub
+sscli list                                 # list installed skills
+sscli remove <slug>                        # remove a skill
 ```
 
 ### Install scope
 
-When you run `sskill install <source>` without flags, it asks where to install:
+When you run `sscli install <source>` without flags, it asks where to install:
 
 ```
 Where do you want to install this skill?
@@ -52,10 +52,10 @@ Where do you want to install this skill?
 Use flags to skip the prompt:
 
 ```bash
-sskill install ./my-skill --global    # ~/.agents/skills/
-sskill install ./my-skill --project   # ./.agents/skills/
-sskill install ./my-skill --claude    # also ~/.claude/skills/
-sskill install ./my-skill --all       # all locations
+sscli install ./my-skill --global    # ~/.agents/skills/
+sscli install ./my-skill --project   # ./.agents/skills/
+sscli install ./my-skill --claude    # also ~/.claude/skills/
+sscli install ./my-skill --all       # all locations
 ```
 
 ### Source types
@@ -63,22 +63,22 @@ sskill install ./my-skill --all       # all locations
 **Local path** — any directory containing `SKILL.md`:
 
 ```bash
-sskill install ./my-skill
-sskill install ~/projects/my-skill
-sskill install /absolute/path/to/skill
+sscli install ./my-skill
+sscli install ~/projects/my-skill
+sscli install /absolute/path/to/skill
 ```
 
 **GitHub repo** — shorthand `owner/repo`:
 
 ```bash
-sskill install sametcelikbicak/task-decomposer
-sskill install sametcelikbicak/coverage-guard
+sscli install sametcelikbicak/task-decomposer
+sscli install sametcelikbicak/coverage-guard
 ```
 
 The CLI clones with `--depth 1`, finds `SKILL.md` recursively, installs it, and cleans up.
 
 <div align="center">
- <img src="assets/sskill_cover.png" alt="Logo" width="256" height="256">
+ <img src="assets/sscli_cover.png" alt="Logo" width="256" height="256">
  </div>
  
 ## What it does
@@ -100,16 +100,16 @@ The CLI clones with `--depth 1`, finds `SKILL.md` recursively, installs it, and 
 
 | Command                   | Description                       |
 | ------------------------- | --------------------------------- |
-| `sskill install <source>` | Install a skill (local or GitHub) |
-| `sskill list`             | Show all installed skills         |
-| `sskill remove <slug>`    | Uninstall a skill                 |
-| `sskill help`             | Show this help                    |
+| `sscli install <source>` | Install a skill (local or GitHub) |
+| `sscli list`             | Show all installed skills         |
+| `sscli remove <slug>`    | Uninstall a skill                 |
+| `sscli help`             | Show this help                    |
 
 ## Project structure
 
 ```
-sskill/
-├── bin/sskill.js          # CLI entry point
+sscli/
+├── bin/sscli.js          # CLI entry point
 ├── src/
 │   ├── commands/
 │   │   ├── install.js     # install logic + interactive scope

@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os'
 let tempDir, lockModule
 
 before(async () => {
-  tempDir = mkdtempSync(join(tmpdir(), 'sskill-lock-test-'))
+  tempDir = mkdtempSync(join(tmpdir(), 'sscli-lock-test-'))
   const oldHome = process.env.HOME
   process.env.HOME = tempDir
   await mkdir(join(tempDir, '.agents'), { recursive: true })
